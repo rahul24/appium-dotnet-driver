@@ -6,6 +6,7 @@ using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Windows;
 using System;
 using System.Globalization;
+using System.Threading;
 
 namespace Appium.Integration.Tests.Windows
 {
@@ -119,9 +120,19 @@ namespace Appium.Integration.Tests.Windows
                 AlarmClockSession.FindElementByAccessibilityId("AddAlarmButton").Click();
                 AlarmClockSession.FindElementByAccessibilityId("AlarmNameTextBox").Clear();
                 AlarmClockSession.FindElementByAccessibilityId("AlarmNameTextBox").SendKeys("Windows Application Driver Test Alarm");
+                WindowsElement periodSelector = null;
+                try
+                {
+                    periodSelector = AlarmClockSession.FindElementByAccessibilityId("PeriodSelector");
+                }
+                catch (NoSuchElementException)
+                {
+                    hourString = alarmTime.ToString("HH", fi);
+                }
+                periodSelector?.FindElementByName(period).Click();
                 AlarmClockSession.FindElementByAccessibilityId("HourSelector").FindElementByName(hourString).Click();
                 AlarmClockSession.FindElementByAccessibilityId("MinuteSelector").FindElementByName(minuteString).Click();
-                AlarmClockSession.FindElementByAccessibilityId("PeriodSelector").FindElementByName(period).Click();
+                Thread.Sleep(500);
                 AlarmClockSession.FindElementByAccessibilityId("AlarmSaveButton").Click();
             }
         }
